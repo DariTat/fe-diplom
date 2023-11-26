@@ -1,23 +1,31 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux";
+import { getSubscribeRequest } from "../redux/slice/passengersSlice";
 
 
 
 export const Footer = () => {
-
+    const { success, error } = useSelector(state => state.passengers);
+    const dispatch = useDispatch();
     const [email, setEmail] = useState('');
-    const [subscribe, setSubscribe] = useState('Отправить');
+    let valid = false;
+
+    useEffect(() => {
+        if (success) {
+            success.status ? setEmail('') : null
+        }
+    }, [success])
+    
+    if (email != '') {
+        let reg;
+        reg = /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i;
+        if (reg.test(email)) {
+            valid = true
+        }
+    }
 
     const handleClick = () => {
-        if (email != '') {
-            let reg;
-            reg = /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i;
-            if (reg.test(email)) {
-                setEmail('');
-                setSubscribe('Отправить')
-            } else {
-                setSubscribe('Ошибка')
-            }
-        } 
+        dispatch(getSubscribeRequest(email));
     }
 
     return(
@@ -61,7 +69,7 @@ export const Footer = () => {
                         <p className="subscribe-text">Будьте в курсе событий</p>
                         <div className="form-subscribe">
                             <input className="subcribe-input" placeholder='email' value={email} onChange={(e) => setEmail(e.target.value)}/>
-                            <button className="btn button-subcribe" onClick={handleClick}>{subscribe}</button>
+                            <button className="btn button-subcribe" onClick={handleClick} disabled={valid ? false : true}>Отправить</button>
                         </div>
                         <h3 className="footer-title">Подписывайтесь на нас</h3>
                         <ul className="social-list">
@@ -100,7 +108,7 @@ export const Footer = () => {
                     <div className='container-logo'>
                         <p>Лого</p>
                     </div>
-                    <a className="footer-link" href="/#">
+                    <a className="footer-link" href="#logo">
                         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
                             <circle cx="18" cy="18" r="17.5" stroke="#E5E5E5"/>
                             <path d="M18.3 16.7569C19.9257 18.3882 21.4531 19.9325 22.9668 21.4552C23.3758 21.8668 24.0742 21.835 24.4854 21.4256C24.8979 21.0149 24.8647 20.3803 24.4522 19.9696C22.6174 18.1427 20.7774 16.3107 18.9612 14.5024C18.5711 14.114 17.9403 14.1139 17.5504 14.5026C15.8017 16.2458 13.9964 18.0515 12.1839 19.8493C11.7544 20.2753 11.7196 20.9344 12.1607 21.3485C12.5791 21.7412 13.2721 21.7659 13.68 21.3622C15.1456 19.912 16.6794 18.383 18.3 16.7569Z" fill="#E5E5E5"/>

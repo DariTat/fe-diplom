@@ -1,6 +1,5 @@
 
 
-
 export const AddPassengers = ({count, setCount}) => {
 
     const handleClick = () => {

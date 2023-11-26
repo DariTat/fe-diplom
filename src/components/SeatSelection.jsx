@@ -5,23 +5,49 @@ import { SeatForm } from "./SeatForm";
 import { SideBar } from "./SideBar";
 import { LastTickets } from "./LastTickets";
 import { Footer } from "./Footer";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { lastRoutesRequest } from "../redux/slice/trainSlice";
+import { format } from "date-fns/esm";
+import { Loader } from "./Preloader";
 
 export const SeatSelection = () => {
+    const { trainSeats, trainSeatsBack, lastRoutes, selectedTrain, form, loadingTrainSeats, errorTrainSeats} = useSelector(state => state.train);
+    const dispatch = useDispatch();
+    const [data, setData] = useState({
+        'from_city_id': form.from_city_id,
+        'to_city_id': form.to_city_id,
+        'date_start': form.date_start,
+        'date_end': form.date_end,
+        'sort': form.sort,
+        'limit': form.limit,
+        'offset': form.offset
+    })
+
+    console.log(trainSeats)
+    console.log(selectedTrain)
+
+    useEffect(() => {
+        dispatch(lastRoutesRequest())
+    }, [])
+
     return (
         <>
-            <Header/>
-            <MainForm/>
-            <StatusBar status={1}/>
-            <div className="main">
-                <div>
-                    <SideBar/>
-                    <LastTickets/>
-                </div>
-                <SeatForm/>
-            </div>
-            
-            <Footer/>
-            
+            <MainForm form={data} setForm={setData}/>
+            { loadingTrainSeats && <Loader/>}
+            { errorTrainSeats && <Error/>}
+            { !loadingTrainSeats && trainSeats ?
+                <>
+                    <StatusBar status={1}/>
+                    <div className="main">
+                        <div>
+                            <SideBar form={data} setForm={setData}/>
+                            <LastTickets lastRoutes={lastRoutes}/>
+                        </div>
+                        <SeatForm selectedTrain={selectedTrain} trainSeats={trainSeats} trainSeatsBack={trainSeatsBack}/>
+                    </div>
+                </> : null
+            } 
         </>
     )
 }

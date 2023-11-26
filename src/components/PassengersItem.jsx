@@ -1,7 +1,9 @@
-import { useState } from "react";
-import Select from 'react-select'
+import { useEffect, useState } from "react";
+import Select from 'react-select';
+import { useDispatch } from "react-redux";
+import { addPassengers } from "../redux/slice/passengersSlice";
 
-export const PassengersItem = ({id}) => {
+export const PassengersItem = ({id, handleDelete, passengers, count}) => {
 
     const [showBtn, setShowBtn] = useState(false);
     const [selected, setSelected] = useState({value: 'old', label: 'Взрослый'});
@@ -14,13 +16,34 @@ export const PassengersItem = ({id}) => {
     const [checked, setChecked] = useState('false');
     const [passport, setPassport] = useState({series: '', number: ''});
     const [sertificate, setSertificate] = useState('');
+    const [type, setType] = useState('passport')
+    console.log(passengers.length, passengers)
     
+    useEffect(() => {
+        if (count === passengers.length) {
+            passengers[id - 1].age === 'Взрослый' ? setSelected({value: 'old', label: 'Взрослый'}) : setSelected({value: 'young', label: 'Детский'})
+            setType(passengers[id - 1].typeDocument)
+            setSurname(passengers[id - 1].surname);
+            setName(passengers[id - 1].name)
+            setSecondName(passengers[id - 1].secondName)
+            setGender(passengers[id - 1].gender)
+            setDataBirthday(passengers[id - 1].dataBirthday)
+            if (passengers[id - 1].typeDocument === 'passport') {
+                setPassport(passengers[id - 1].document)
+            } else {
+                setSertificate(passengers[id - 1].document)
+            }
+        }
+        console.log(type, passport, sertificate)
+    }, [passengers])
+
+    
+    const dispatch = useDispatch();
 
     let validData;
     let validPassport;
     let validSertificate;
     let valid;
-
 
     if ((passport.series !== '' && passport.series.length === 4) && (passport.number !== '' && passport.number.length === 6)) {
         validPassport = true;
@@ -39,7 +62,6 @@ export const PassengersItem = ({id}) => {
         validSertificate = reg.test(sertificate)
     }
 
-
     if ((name !== '' && secondName !== '' && surname !== '') && validData === true && (validPassport === true || validSertificate === true)) {
         console.log(validPassport, validSertificate)
         valid = true;
@@ -47,8 +69,6 @@ export const PassengersItem = ({id}) => {
         valid = false;
     }
 
-        
-    
     const options = [
         {value: 'old', label: 'Взрослый'},
         {value: 'young', label: 'Детский'}
@@ -144,17 +164,19 @@ export const PassengersItem = ({id}) => {
         setName('');
         setSecondName('');
         setSurname('');
+        selectedOption.value === 'young' ? setType("certificate") : setType('passport')
         if (selectedOption.label === 'Детский') {
             setPassport({series: '', number: ''})
         } else {
             setSertificate('')
         }
-        console.log(selectedOption);
         setSelected(selectedOption);
     }
 
     const handleChangeDocument = (selectedOption) => {
+        selectedOption.value === 'certificate' ? setType("certificate") : setType('passport')
         setDocument(selectedOption);
+
     }
 
     const handlePassport = (event) => {
@@ -165,6 +187,22 @@ export const PassengersItem = ({id}) => {
         setSertificate(e.target.value)
     }
 
+    const clickAddPass = () => {
+        const info = {
+            id,
+            age: selected.label,
+            name,
+            surname,
+            secondName,
+            gender,
+            dataBirthday,
+            typeDocument: type,
+            document: type === 'passport' ? passport : sertificate, 
+        }
+        console.log(info)
+        dispatch(addPassengers({data: info}))
+    }
+
     return (
         <>
             <div className="passengers-block-item">
@@ -172,7 +210,7 @@ export const PassengersItem = ({id}) => {
                     <button className="btn passengers-block-item-btn" onClick={() => handleChange()}>
                         { showBtn ?
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <circle cx="16" cy="16" r="15" stroke="#928F94" stroke-width="2"/>
+                                <circle cx="16" cy="16" r="15" stroke="#928F94" strokeWidth="2"/>
                                 <line x1="8" y1="16" x2="24" y2="16" stroke="#928F94" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg> :
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" className="svg-show-passenger">
@@ -183,7 +221,7 @@ export const PassengersItem = ({id}) => {
                     </button>
                     <h3 className="passengers-block-item-header-title">Пассажир <span>{id}</span></h3>
                     { showBtn ?
-                        <button className="btn passengers-block-item-delete">
+                        <button className="btn passengers-block-item-delete" onClick={() => handleDelete(id)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
                                 <path d="M10.3 0.3L6 4.6L1.7 0.3C1.3 -0.1 0.7 -0.1 0.3 0.3C-0.1 0.7 -0.1 1.3 0.3 1.7L4.6 6L0.3 10.3C-0.1 10.7 -0.1 11.3 0.3 11.6L0.4 11.7C0.8 12.1 1.4 12.1 1.7 11.7L6 7.4L10.2 11.6C10.6 12 11.2 12 11.6 11.6C12 11.2 12 10.6 11.6 10.2L7.4 6L11.7 1.7C12.1 1.3 12.1 0.7 11.7 0.4L11.6 0.3C11.2 -0.1 10.6 -0.1 10.3 0.3Z" fill="#928F94"/>
                             </svg>
@@ -279,7 +317,7 @@ export const PassengersItem = ({id}) => {
                                ) : null
                                
                             }
-                            <button className="btn passengers-block-item-next-btn" style={{marginLeft: valid === false ? '602px' : '0'}}>Следующий пассажир</button>
+                            <button className="btn passengers-block-item-next-btn" onClick={clickAddPass} style={{marginLeft: valid === false ? '602px' : '0'}} disabled={valid === true ? false : true}>Следующий пассажир</button>
                         </div>
                     </div> : null
                 }

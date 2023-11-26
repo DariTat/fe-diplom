@@ -1,42 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { setPersonalData } from "../redux/slice/passengersSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 
 export const PaymentInfo = () => {
+    const { personalData } = useSelector(state => state.passengers)
     const navigate = useNavigate();
-    const [surname, setSurname] = useState('');
-    const [name, setName] = useState('');
-    const [secondName, setSecondName] = useState('');
-    const [telephone, setTelephone] = useState('');
-    const [mail, setEmail] = useState('');
+    const [info, setInfo] = useState({
+        name: personalData.name,
+        surname: personalData.surname,
+        secondName: personalData.secondName,
+        mail: personalData.mail,
+        telephone: personalData.telephone,
+        payment: personalData.payment 
+    })
     const [online, setOnline] = useState(false);
     const [cash, setCash] = useState(false);
-
+    const dispatch = useDispatch();
    
-    let valid = true;
+    let valid = false;
     let validEmail;
     let validTelephone;
+    console.log(online, cash)
+    
+    useEffect(() => {
+        if (online === true) {
+            setInfo(prevInfo => ({...prevInfo, payment: 'online'}))
+        } else if (cash === true) {
+            setInfo(prevInfo => ({...prevInfo, payment: 'cash'}))
+        }
+    },[online, cash])
     
 
-    if (telephone != '') {
+    if (info.telephone != '') {
         let reg;
         reg = /^\+?(\d{1,3})?[- .]?\(?(?:\d{2,3})\)?[- .]?\d\d\d[- .]?\d\d\d\d$/
-        validTelephone = reg.test(telephone);
+        validTelephone = reg.test(info.telephone);
     }
     
-    if (mail != '') {
+    if (info.mail != '') {
         let reg;
         reg = /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i;
-        validEmail = reg.test(mail);
+        validEmail = reg.test(info.mail);
     }
 
     
-    if ((name !== '' && secondName !== '' && surname !== '') && validEmail && validTelephone && (online || cash) ) {
+    if ((info.name !== '' && info.secondName !== '' && info.surname !== '') && validEmail && validTelephone && (online || cash) ) {
         valid = true;
     }
 
+    console.log(info)
+
     const handleClick = () => {
-        navigate('/checkorder')
+        console.log(info)
+        dispatch(setPersonalData({data: info}))
+        navigate('/trips/checkorder/')
     }
 
     return (
@@ -48,24 +67,24 @@ export const PaymentInfo = () => {
                         <div className="payment-info-fullname-block">
                                 <div className="payment-info-fullname">
                                     <label className="payment-info-fullname-label">Фамилия</label>
-                                    <input type='text' value={surname} onChange={(e) => setSurname(e.target.value)} required className="payment-info-fullname-input"/>
+                                    <input type='text' value={info.surname} onChange={(e) => setInfo(prevInfo => ({...prevInfo, surname: e.target.value }))} required className="payment-info-fullname-input"/>
                                 </div>
                                 <div className="payment-info-fullname">
                                     <label className="payment-info-fullname-label">Имя</label>
-                                    <input type='text' value={name} onChange={(e) => setName(e.target.value)} required className="payment-info-fullname-input"/>
+                                    <input type='text' value={info.name} onChange={(e) => setInfo(prevInfo => ({...prevInfo, name: e.target.value }))} required className="payment-info-fullname-input"/>
                                 </div>
                                 <div className="payment-info-fullname">
                                     <label className="payment-info-fullname-label">Отчество</label>
-                                    <input type='text' value={secondName} onChange={(e) => setSecondName(e.target.value)} required className="payment-info-fullname-input"/>
+                                    <input type='text' value={info.secondName} onChange={(e) => setInfo(prevInfo => ({...prevInfo, secondName: e.target.value }))} required className="payment-info-fullname-input"/>
                                 </div>
                         </div>
                         <div className="payment-info-mobily">
                             <label className="payment-info-mobily-label">Контактный телефон</label>
-                            <input className="payment-info-mobily-input" value={telephone} placeholder="+7 __ __ _ _" onChange={(e) => setTelephone(e.target.value)}/>
+                            <input className="payment-info-mobily-input" value={info.telephone} placeholder="+7 __ __ _ _" onChange={(e) => setInfo(prevInfo => ({...prevInfo, telephone: e.target.value }))}/>
                         </div>
                         <div className="payment-info-mail">
                             <label className="payment-info-mail-label">E-mail</label>
-                            <input className="payment-info-mail-input" value={mail} placeholder="inbox@gmail.ru" onChange={(e) => setEmail(e.target.value)}/>
+                            <input className="payment-info-mail-input" value={info.mail} placeholder="inbox@gmail.ru" onChange={(e) => setInfo(prevInfo => ({...prevInfo, mail: e.target.value }))}/>
                         </div>
                     </div>
                     <div className="payment-info-methods-payment-block">
