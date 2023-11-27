@@ -253,9 +253,12 @@ export const passengersSlice = createSlice({
                 departure: [],
                 arrival: []
             };
+            state.passengers = [];
+        },
+        orderResult: (state) => {
+            state.successOrder = null;
             state.totalPrice = 0;
             state.totalPriceBack = 0;
-            state.passengers = [];
             state.personalData ={
                 name: '',
                 surname: '',
@@ -264,9 +267,6 @@ export const passengersSlice = createSlice({
                 telephone: '',
                 payment: '' 
             };
-        },
-        orderResult: (state) => {
-            state.successOrder = null;
         }
     }
 })

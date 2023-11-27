@@ -19,7 +19,7 @@ export const CheckData = ({passengers, train, totalPrice, personalData}) => {
 
     useEffect(() => {
         if (successOrder) {
-            successOrder.status ? navigate('/trips/result/') : null
+            successOrder.status ? navigate('/fe-diplom/result/') : null
         }
     }, [successOrder])
 
@@ -204,7 +204,7 @@ export const CheckData = ({passengers, train, totalPrice, personalData}) => {
                                 }
                             </ul>
                             <img className='train-card-place-img' src={icon}/>
-                            <button className='btn train-card-change-btn' onClick={() => navigate('/trips/trains')}>Изменить</button>
+                            <button className='btn train-card-change-btn' onClick={() => navigate('/fe-diplom/trains')}>Изменить</button>
                         </div>
                     </div>
                 </div>
@@ -247,7 +247,7 @@ export const CheckData = ({passengers, train, totalPrice, personalData}) => {
                                     <span className='check-data-passengers-result-sum'>{totalPrice + totalPriceBack}</span>
                                     <img className='train-card-place-price-img' src={ruble}/>
                                 </div>
-                                <button className='btn train-card-change-btn' onClick={() => navigate('/trips/passengers/')}>Изменить</button>
+                                <button className='btn train-card-change-btn' onClick={() => navigate('/fe-diplom/passengers/')}>Изменить</button>
                             </div>
                         </div>
                     </div>
@@ -258,7 +258,7 @@ export const CheckData = ({passengers, train, totalPrice, personalData}) => {
                         <div className='check-data-payment-cash'>
                             {personalData?.payment === "cash" ? 'Наличными' : 'Онлайн'}
                         </div>
-                        <button className='btn train-card-change-btn' onClick={() => navigate('/trips/payment/')}>Изменить</button>
+                        <button className='btn train-card-change-btn' onClick={() => navigate('/fe-diplom/payment/')}>Изменить</button>
                     </div>
                 </div>
                 <button className='btn check-data-done-btn' onClick={handleClick}>Подтвердить</button>

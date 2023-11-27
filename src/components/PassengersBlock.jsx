@@ -9,7 +9,7 @@ export const PassengersBlock = ({count, setCount, handleDelete}) => {
     const navigate = useNavigate();
     
     const handleClick = () => {
-        navigate('/trips/payment/')
+        navigate('/fe-diplom/payment/')
     }
     let valid = passengers.length === count.length ? true : false 
     console.log(valid)

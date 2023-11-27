@@ -55,7 +55,7 @@ export const PaymentInfo = () => {
     const handleClick = () => {
         console.log(info)
         dispatch(setPersonalData({data: info}))
-        navigate('/trips/checkorder/')
+        navigate('/fe-diplom/checkorder/')
     }
 
     return (

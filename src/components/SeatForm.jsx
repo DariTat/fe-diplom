@@ -86,11 +86,11 @@ export const SeatForm = ({selectedTrain, trainSeats, trainSeatsBack}) => {
     }, [selectedTrain])
 
     const handleClick = () => {
-        navigate('/trips/trains')
+        navigate('/fe-diplom/trains')
     }
 
     const handleClickNext = () => {
-        navigate('/trips/passengers/')
+        navigate('/fe-diplom/passengers/')
     }
 
     const formatDate = (time) => {

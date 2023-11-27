@@ -13,7 +13,7 @@ export const ResultOrderPage = () => {
     const amount = Array(5).fill().map((e, i) => i + 1);
 
     const handleClick = () => {
-        navigate('/trips')
+        navigate('/fe-diplom')
     }
 
     useEffect(() => {

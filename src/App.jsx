@@ -16,7 +16,7 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path='/trips/' element={<Page/>}>
+          <Route path='/fe-diplom/' element={<Page/>}>
             <Route index element={<HomePage/>}/>
             <Route path='trains/' element={<TrainSelection/>}/>
             <Route path='trains/:id' element={<SeatSelection/>}/>
