@@ -1,10 +1,13 @@
 {
   "name": "fe-diplom",
+  "homepage": "https://daritat.github.io/fe-diplom/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -12,6 +15,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
     "date-fns": "^2.30.0",
+    "gh-pages": "^6.1.0",
     "react": "^18.2.0",
     "react-calendar": "^4.6.0",
     "react-dom": "^18.2.0",
